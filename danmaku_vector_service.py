@@ -24,7 +24,7 @@ class DanmakuVectorService:
         vector = self.matcher.get_text_vector(text)
         
         # 存储到Redis
-        return self.redis_manager.store_vector(text, vector, metadata)
+        return self.redis_manager.store_vector(text, vector, 3600, metadata)
         
     def find_similar_texts(self, query_text: str, 
                           similarity_threshold: float = 0.5,
@@ -56,7 +56,10 @@ def main():
         "主播操作太秀了",
         "这个游戏好难",
         "主播玩得真棒",
-        "今天天气真好"
+        "今天天气真好",
+        "主播我喜欢你",
+        "主播什么时候再直播呢？",
+        "我爱你主播"
     ]
 
     # 存储测试文本

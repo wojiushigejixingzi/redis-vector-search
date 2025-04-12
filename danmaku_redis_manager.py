@@ -23,9 +23,10 @@ class DanmakuRedisManager:
             level=logging.INFO
         )
 
-    def store_vector(self, text: str, vector: np.ndarray, metadata: dict = None) -> bool:
+    def store_vector(self, text: str, vector: np.ndarray, expire:int,metadata: dict = None) -> bool:
         """
         存储文本及其向量到Redis
+        :param expire:
         :param text: 原始文本
         :param vector: 向量表示
         :param metadata: 额外的元数据（如时间戳、用户ID等）
@@ -44,15 +45,16 @@ class DanmakuRedisManager:
             })
             
             # 存储向量和元数据
-            self.redis_client.set(
+            self.redis_client.setex(
                 vector_key,
-                json.dumps(vector.tolist())  # numpy数组转换为JSON
+                expire,  # 过期时间为1小时
+                json.dumps(vector.tolist()),
             )
-            self.redis_client.set(
+            self.redis_client.setex(
                 metadata_key,
-                json.dumps(metadata)
+                expire,  # 过期时间为1小时
+                json.dumps(metadata),
             )
-            
             logging.info(f"成功存储文本: {text} vector_key: {vector_key}")
             return True
             
